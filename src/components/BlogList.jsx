@@ -6,7 +6,7 @@ import styled from 'styled-components';
 function BlogList({ posts, onSelectPost }) {
     return (
     <div>
-        <h2>📚 글 목록</h2>
+        <h2>글 목록</h2>
         {posts.map(post => (
         <PostItem key={post.id} onClick={() => onSelectPost(post)}>
             <h3>{post.title}</h3>
@@ -20,7 +20,7 @@ function BlogList({ posts, onSelectPost }) {
 export default BlogList;
 
 
-
+// styled-components
 const PostItem = styled.div`
     padding: 10px;
     border-bottom: 1px solid #ccc;

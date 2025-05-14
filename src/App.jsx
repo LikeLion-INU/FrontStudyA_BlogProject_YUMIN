@@ -1,40 +1,35 @@
-// App.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
+
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import BlogDetail from './components/BlogDetail';
-
-const Container = styled.div`
-  padding: 20px;
-  max-width: 800px;
-  margin: auto;
-`;
+import Profile from './components/Profile';
+import GlobalStyle from './GlobalStyle';
 
 function App() {
-  // 초기 더미 게시글 데이터
   const initialPosts = [
     {
       id: 1,
-      title: '첫 번째 글',
-      content: '이것은 첫 번째 블로그 글입니다.',
+      title: '집가고 싶다',
+      content: '36시간 자고싶네...',
       comments: [
-        { id: 1, text: '좋은 글이에요!' },
-        { id: 2, text: '잘 읽었습니다.' }
+        { id: 1, text: '저도요' },
+        { id: 2, text: '힘내세요 ^^' }
       ]
     },
     {
       id: 2,
-      title: '두 번째 글',
-      content: '두 번째 글 내용이에요.',
+      title: '저메추',
+      content: '저녁 뭐 먹을까요 추천해주세요',
       comments: []
     }
   ];
 
-  const [posts, setPosts] = useState(initialPosts); // 게시글 목록 상태
-  const [selectedPost, setSelectedPost] = useState(null); // 선택된 글 상세보기용
+  const [posts, setPosts] = useState(initialPosts);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isWriting, setIsWriting] = useState(false);
 
-  // 글 작성 함수
   const addPost = (title, content) => {
     const newPost = {
       id: Date.now(),
@@ -43,15 +38,14 @@ function App() {
       comments: []
     };
     setPosts([newPost, ...posts]);
+    setIsWriting(false);
   };
 
-  // 글 삭제 함수
   const deletePost = (id) => {
     setPosts(posts.filter(post => post.id !== id));
     setSelectedPost(null);
   };
 
-  // 댓글 추가 함수
   const addComment = (postId, text) => {
     setPosts(
       posts.map(post =>
@@ -65,7 +59,6 @@ function App() {
     );
   };
 
-  // 댓글 삭제 함수
   const deleteComment = (postId, commentId) => {
     setPosts(
       posts.map(post =>
@@ -80,22 +73,54 @@ function App() {
   };
 
   return (
-    <Container>
-      <h1>📝 미니 블로그</h1>
-      <BlogForm addPost={addPost} />
-      {selectedPost ? (
-        <BlogDetail
-          post={selectedPost}
-          onBack={() => setSelectedPost(null)}
-          deletePost={deletePost}
-          addComment={addComment}
-          deleteComment={deleteComment}
-        />
-      ) : (
-        <BlogList posts={posts} onSelectPost={setSelectedPost} />
-      )}
-    </Container>
+    <>
+      <GlobalStyle />
+      <Container>
+        <Title>멋쟁이사자처럼 13th 미니 블로그</Title>
+        <div style={{ marginTop: '30px' }}>
+          <Profile />
+        </div>
+
+        {isWriting ? (
+          <BlogForm addPost={addPost} onBack={() => setIsWriting(false)} />
+        ) : selectedPost ? (
+          <BlogDetail
+            post={posts.find(p => p.id === selectedPost.id)} // 최신 상태 반영!
+            onBack={() => setSelectedPost(null)}
+            deletePost={deletePost}
+            addComment={addComment}
+            deleteComment={deleteComment}
+          />
+        ) : (
+          <>
+            <WriteButton onClick={() => setIsWriting(true)}>새 글 작성</WriteButton>
+            <BlogList posts={posts} onSelectPost={setSelectedPost} />
+          </>
+        )}
+      </Container>
+    </>
   );
 }
 
 export default App;
+
+
+// styled-components
+const Container = styled.div`
+  padding: 50px 200px 0 200px;
+  max-width: 800px;
+  height: 100vh;
+  margin: auto;
+  background-color: #FFFBDE;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+`;
+
+const WriteButton = styled.button`
+  padding: 10px 15px;
+  margin: 20px 0;
+`;
